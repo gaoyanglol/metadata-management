@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>元数据登录系统</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <div class="header clearfix">
+    <h1 class="header-logo separate"></h1>
+    <div class="nav clearfix">
+      <div class="nav-item separate">
+        <a href="#" class="meta-res compact">元数据资源</a>
+      </div>
+      <div class="nav-item separate">
+        <a href="#" class="meta-rel compact">元数据关系</a>
+      </div>
+      <div class="nav-item separate selected">
+        <a href="#" class="meta-man">元数据管理</a>
+        <ul class="sub-nav">
+          <li class="selected"><a href="#">制度</a></li>
+          <li><a href="#">报表</a></li>
+          <li class="has-child">
+            <a href="#">指标</a>
+            <div class="sub-sub-wrapper">
+              <ul class="sub-sub-nav">
+                <li class="selected"><a href="">指标1指标1</a></li>
+                <li><a href="">指标2</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a href="#">分组/目录</a></li>
+          <li><a href="#">计量单位</a></li>
+          <li class="has-child">
+            <a href="#">辅助功能</a>
+            <div class="sub-sub-wrapper">
+              <ul class="sub-sub-nav">
+                <li class="selected"><a href="">指标1指标1</a></li>
+                <li><a href="">指标2</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="user user-exit">
+      <a href="#">退出</a>
+    </div>
+    <div class="user user-id separate">
+      <a href="#">userName</a>
+    </div>
+    
+  </div>
+
+  <script>
+    function changeTab(list) {
+      for(var i = 0 ; i < list.length ; i++) {
+        list[i].firstElementChild.onclick = function(e) {
+          var children = e.target.parentNode.parentNode.children
+          for (var i = 0 ; i < children.length ; i++ ) {
+            children[i].classList.remove("selected")
+            children[i].firstElementChild.classList.remove("compact")
+          }
+          e.target.parentNode.classList.add("selected")
+        }
+      }
+    }
+    // 大标题切换选中状态
+    var navItems = document.getElementsByClassName("nav-item")
+    changeTab(navItems)
+
+    // 小标题切换选中状态
+    var subNav = document.querySelector(".sub-nav")
+    changeTab(subNav.children)
+
+    // 当点击元数据管理时为其他两个按钮添加紧凑样式
+    var metaMan = document.querySelector(".meta-man")
+    metaMan.addEventListener("click", function(){
+      for (var i = 0 ; i < navItems.length ; i++) {
+       if (navItems[i].firstElementChild.className !== "meta-man") {
+         navItems[i].firstElementChild.classList.add("compact")
+       }
+      }
+    }, false)
+    // 等待动画完成获取元素尺寸
+    metaMan.addEventListener("click", delayResize)
+    function delayResize() {
+      setTimeout(setMetaManagementWidth, 300)
+    }
+    subNav.addEventListener("animationstart", function(){
+      this.style.overflow = "hidden"
+    })
+    subNav.addEventListener("animationend", function(){
+      this.style.overflow = "visible"
+    })
+
+    // 设定元数据管理子菜单宽度自适应
+    function setMetaManagementWidth() {
+      // 获取导航栏内各元素宽度
+      var idWidth = document.querySelector(".user-id").offsetWidth
+      var logoWidth = document.querySelector(".header-logo").offsetWidth
+      var metaResWidth = document.querySelector('.meta-res').parentNode.offsetWidth
+      var metaRelWidth = document.querySelector('.meta-rel').parentNode.offsetWidth
+      var exitWidth = document.querySelector('.user-exit').offsetWidth
+      var metaManWidth = document.querySelector('.meta-man').offsetWidth
+      // 计算元数据管理菜单最大展开宽度
+      var subNav = document.querySelector(".sub-nav")
+      var metaMan = subNav.parentNode
+      
+      if (window.innerWidth > 1366) {
+        var subNavWidth = window.innerWidth - idWidth - logoWidth - metaResWidth - metaRelWidth - exitWidth - 20
+      }
+      else {
+        var subNavWidth = 1366 - idWidth - logoWidth - metaResWidth - metaRelWidth - exitWidth - 20
+      }
+      // 设定子菜单宽度(除去padding,margin)
+      subNav.setAttribute("style", "width:" + (subNavWidth - metaManWidth - 20 - 15 - 40 - 5) + "px")
+    }
+    window.onload = setMetaManagementWidth
+    window.onresize = setMetaManagementWidth
+  </script>
+</body>
+</html>
